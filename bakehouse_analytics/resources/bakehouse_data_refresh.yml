@@ -38,8 +38,3 @@ resources:
         - environment_key: default
           spec:
             environment_version: "5"
-            dependencies:
-              # By default we just include the .whl file generated for the bakehouse_analytics package.
-              # See https://docs.databricks.com/dev-tools/bundles/library-dependencies.html
-              # for more information on how to add other libraries.
-              - ../dist/*.whl

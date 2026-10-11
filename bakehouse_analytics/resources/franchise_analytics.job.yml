@@ -4,7 +4,6 @@ resources:
       name: franchise_analytics
       tasks:
         - task_key: franchise_analytics
-          disabled: false
           email_notifications: {}
           environment_key: Default
           notebook_task:
