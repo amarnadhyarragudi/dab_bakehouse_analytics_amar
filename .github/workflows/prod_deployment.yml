@@ -30,6 +30,9 @@ jobs:
           # Download the Databricks CLI.
           # see https://github.com/databricks/setup-cli
           - uses: databricks/setup-cli@main
+            with:
+               host: ${{ secrets.DATABRICKS_HOST }}
+               token: ${{ secrets.SP_TOKEN }}
 
           # Deploy the bundle to the "prod" target as defined
           # in the bundle's settings file.
