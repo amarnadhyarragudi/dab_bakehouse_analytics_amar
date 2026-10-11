@@ -1,51 +1,50 @@
-# This workflow validates , deploy, and runs the specified bundle
-# within a production target named "prod"
-name : 'production deployment'
 
+# Validate and deploy the Databricks Asset Bundle to production
+name: "Production Deployment"
 
-# Ensure that only a single job or workflow using the same concurrency group
-# runs at a time.
+# Allow only one deployment to run at a time
+concurrency:
+  group: databricks-production-deployment
+  cancel-in-progress: false
 
-concurrency: 1
-
-# trigger this workflow whenever a pull request is pushed to the repo's 
-# main branch
-
+# Trigger on pushes to main when bundle files change
 on:
-   push:
-      branches: 
-         - main 
-      paths:
-         - 'bakehouse_analytics/**'
+  push:
+    branches:
+      - main
+    paths:
+      - "bakehouse_analytics/**"
+
+# Minimum permissions required to check out the repository
+permissions:
+  contents: read
 
 jobs:
-   deploy:
-       name: 'Deploy bundle'
-       runs-on: ubuntu-24.04
+  deploy:
+    name: "Validate and Deploy Bundle"
+    runs-on: ubuntu-24.04
 
-       steps:
-          # instal python library
-          - run: |
-               python -m pip install --upgrade pip
-               pip install uv
-              
-          # Check out this repo, so that this workflow can access it.
-          - uses: actions/checkout@v3
+    steps:
+      # Check out the repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-          # Download the Databricks CLI.
-          # see https://github.com/databricks/setup-cli
-          - uses: databricks/setup-cli@main
-            with:
-               host: ${{ secrets.DATABRICKS_HOST }}
-               token: ${{ secrets.SP_TOKEN }}
+      # Install the Databricks CLI
+      - name: Setup Databricks CLI
+        uses: databricks/setup-cli@main
 
-          # Deploy the bundle to the "prod" target as defined
-          # in the bundle's settings file.
-          - run: databricks bundle deploy
-            working-directory: bakehouse_analytics
-            env:
-              DATABRICKS_HOST: https://dbc-64beeaa9-c629.cloud.databricks.com
-              DATABRICKS_TOKEN: ${{ secrets.SP_TOKEN }}
-              DATABRICKS_BUNDLE_ENV: prod
-       
+      # Validate the production bundle configuration
+      - name: Validate bundle
+        working-directory: bakehouse_analytics
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.SP_TOKEN }}
+        run: databricks bundle validate --target prod
 
+      # Deploy the bundle to production
+      - name: Deploy bundle
+        working-directory: bakehouse_analytics
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.SP_TOKEN }}
+        run: databricks bundle deploy --target prod
