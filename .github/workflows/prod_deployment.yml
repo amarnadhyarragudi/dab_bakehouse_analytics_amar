@@ -36,7 +36,7 @@ jobs:
           - run: databricks bundle deploy
             working-directory: bakehouse_analytics
             env:
-              DATRBRICKS_TOKEN : ${{ secrets.SP_TOKEN }}
+              DATARBRICKS_TOKEN : ${{ secrets.SP_TOKEN }}
               DATABRICKS_BUNDLE_ENV: prod
        
 
