@@ -37,6 +37,7 @@ jobs:
             working-directory: bakehouse_analytics
             env:
              DATABRICKS_PAT: ${{ secrets.SP_TOKEN }}
+             DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
              DATABRICKS_BUNDLE_ENV: prod
        
 
