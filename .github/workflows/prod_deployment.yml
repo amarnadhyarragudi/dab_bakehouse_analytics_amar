@@ -4,7 +4,9 @@ name: 'Production deployment'
 
 # Ensure that only a single job or workflow using the same concurrency group
 # runs at a time.
-concurrency: 1
+concurrency: 
+      group: databricks-prod-deployment
+      cancel-in-progress: false
 
 # Trigger this workflow whenever a pull request is pushed to the repo's
 # main branch.
