@@ -21,7 +21,7 @@ on:
 jobs:
    deploy:
        name: 'Deploy bundle'
-       runs-on: ubuntu-latest
+       runs-on: ubuntu-24.04
 
        steps:
           # Check out this repo, so that this workflow can access it.
